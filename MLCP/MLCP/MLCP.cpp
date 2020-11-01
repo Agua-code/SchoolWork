@@ -20,12 +20,12 @@ using namespace std;
 clock_t startTime, endTime;//记录运行时间
 double bestTime;//最佳时间
 double cutting_time = 180;//终止条件
-string inFile = "C:/Users/18367/Documents/Visual Studio 2015/Projects/MLCP/Debug/data/anna.col";
+string inFile = "C:/Users/18367/Documents/Visual Studio 2015/Projects/MLCP/Debug/data/DSJC125.1.col";
 string outFile = "C:/Users/18367/Documents/Visual Studio 2015/Projects/MLCP/Debug/data/experiment_tt20_swap_exp4.txt";
 
 
 //主要调节的参数
-int tt = 2;//禁忌长度
+int tt = 10;//禁忌长度
 int omega = 500;//扰动的阈值
 float alpha = 0.01;//扰动强度
 int noimprove = 0;//连续未更新的次数
@@ -181,11 +181,14 @@ void local_search()
 	int delta;
 	int temp_delta = -MAX_VAL;
 	int swap_delta = -MAX_VAL;
+	int temp_delta_2 = -MAX_VAL;
+	int swap_delta_2 = -MAX_VAL;
 	int i, j, k, m;
 	int mark = -1;
 	int swap_0 = -1;
 	int swap_1 = -1;
 	int org_0, org_1;
+	int num1 = 0, num2 = 0;
 	//FLIP
 	for (i = 0; i < verNum; i++)
 	{
@@ -199,6 +202,15 @@ void local_search()
 		{
 			temp_delta = delta;
 			mark = i;
+		}
+		else if (delta == temp_delta) {//引入第二个函数
+			if (k + m > temp_delta_2) {
+				temp_delta_2 = k + m;
+				mark = i;
+			}
+			else if (k + m == temp_delta_2) {
+				num1++;
+			}
 		}
 	}
 	//cout << "mark: " << mark+1 << " temp_delta: " << temp_delta << endl;
@@ -227,6 +239,16 @@ void local_search()
 				swap_0 = org_0;
 				swap_1 = org_1;
 			}
+			else if (delta == swap_delta) {
+				if (k + m > swap_delta_2) {
+					swap_delta_2 = k + m;
+					swap_0 = org_0;
+					swap_1 = org_1;
+				}
+				else if (k + m == swap_delta_2) {
+					num2++;
+				}
+			}
 		}
 
 	}
@@ -246,7 +268,7 @@ void local_search()
 		FLIP(mark);//对数据结构进行更新
 		judge_best();
 	}
-
+	//cout << "num1 = " << num1 << " num2 = " << num2 << endl;
 }
 
 
